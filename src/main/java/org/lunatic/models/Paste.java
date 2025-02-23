@@ -16,30 +16,14 @@ import java.time.ZonedDateTime;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Paste {
     @Id
     @GeneratedValue
     private long Id;
-    private String url;
-    @Lob
     private String text;
     private String hash;
     private ZonedDateTime createDateTime;
     private ZonedDateTime dropDateTime;
-
     private boolean isPrivate;
-
-    public Paste(String url,
-                 String text,
-                 String hash,
-                 ZonedDateTime createDateTime,
-                 ZonedDateTime dropDateTime,
-                 boolean isPrivate) {
-        this.url = url;
-        this.text = text;
-        this.hash = hash;
-        this.createDateTime = createDateTime;
-        this.dropDateTime = dropDateTime;
-        this.isPrivate = isPrivate;
-    }
 }

@@ -1,11 +1,9 @@
 package org.lunatic.storage;
 
-import org.lunatic.DTO.CreatePasteDTO;
-import org.lunatic.DTO.PasteResponseDTO;
-import org.lunatic.DTO.PasteSearchInBlobDTO;
+import org.lunatic.DTO.*;
 
 public interface YandexStorage {
     void init();
-    void put(CreatePasteDTO request);
+    HashResponseDTO put(PastePutToBlobDTO request);
     PasteResponseDTO get(PasteSearchInBlobDTO pasteSearchInBlobDTO);
 }

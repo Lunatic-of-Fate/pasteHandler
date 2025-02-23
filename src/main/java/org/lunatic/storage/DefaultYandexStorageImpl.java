@@ -12,36 +12,35 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.lunatic.DTO.CreatePasteDTO;
+import lombok.RequiredArgsConstructor;
+import org.lunatic.DTO.HashResponseDTO;
+import org.lunatic.DTO.PastePutToBlobDTO;
 import org.lunatic.DTO.PasteResponseDTO;
 import org.lunatic.DTO.PasteSearchInBlobDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.modelmapper.ModelMapper;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
-@AllArgsConstructor
-@NoArgsConstructor
-
+@RequiredArgsConstructor
 @Service
 public class DefaultYandexStorageImpl implements YandexStorage {
     private static final Logger log = LoggerFactory.getLogger(DefaultYandexStorageImpl.class);
     private final String BUCKET_NAME = "melanief";
     private AmazonS3 cloudClient;
-
-    private String credentialsFilePath; // Путь к файлу credentials
+    private final ModelMapper mapper;
 
     @PostConstruct
     public void init() {
         createCloudClient();
     }
 
-    public void put(CreatePasteDTO request) {
+    public HashResponseDTO put(PastePutToBlobDTO request) {
         if (request == null) {
             throw new IllegalArgumentException("Request cannot be null");
         }
@@ -69,6 +68,7 @@ public class DefaultYandexStorageImpl implements YandexStorage {
             log.error("Unexpected error. Hash: {}", request.getHash(), e);
             throw new RuntimeException("Internal server error", e);
         }
+        return mapper.map(request, HashResponseDTO.class);
     }
 
     public PasteResponseDTO get(PasteSearchInBlobDTO pasteSearchInBlobDTO) {
