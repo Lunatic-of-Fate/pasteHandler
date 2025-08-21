@@ -1,6 +1,7 @@
 package org.lunatic.controller;
 
 import lombok.AllArgsConstructor;
+import org.lunatic.DTO.HashResponseDTO;
 import org.lunatic.DTO.PasteInputInControllerDTO;
 import org.lunatic.DTO.PasteResponseDTO;
 import org.lunatic.DTO.PasteSearchInBlobDTO;
@@ -21,7 +22,7 @@ public class PasteController {
         return pasteService.get(pasteSearchInBlobDTO);
     }
     @PutMapping("/put")
-    public PasteResponseDTO put(@RequestBody PasteInputInControllerDTO pasteInputInControllerDTO) {
+    public HashResponseDTO put(@RequestBody PasteInputInControllerDTO pasteInputInControllerDTO) {
         return pasteService.put(pasteInputInControllerDTO);
     }
 }

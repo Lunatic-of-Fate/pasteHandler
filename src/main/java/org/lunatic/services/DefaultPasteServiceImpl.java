@@ -26,19 +26,19 @@ public class DefaultPasteServiceImpl implements PasteService {
 
 
     @Override
-    public PasteResponseDTO put(PasteInputInControllerDTO inputDTO) {
+    public HashResponseDTO put(PasteInputInControllerDTO inputDTO) {
         mapper.map(inputDTO, Paste.class);
-
         Paste paste = Paste.builder()
                 .text(inputDTO.getText())
                 .hash(getHashToGenerator().getHash())
                 .createDateTime(ZonedDateTime.now())
                 .dropDateTime(ZonedDateTime.now().plusHours(inputDTO.getLiveTime()))
-                .isPrivate(false)
+                .isPrivate(inputDTO.isPrivate())
                 .build();
         pasteJpaRepository.save(paste);
+
         return mapper.map(
-                yandexStorage.put(mapper.map(paste, PastePutToBlobDTO.class)), PasteResponseDTO.class);
+                yandexStorage.put(mapper.map(paste, PastePutToBlobDTO.class)), HashResponseDTO.class);
     }
 
     public PasteResponseDTO get(PasteSearchInBlobDTO pasteSearchInBlobDTO) {
