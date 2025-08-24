@@ -43,11 +43,15 @@ bootJar {
     mainClass = 'org.lunatic.Main' // Укажите ваш main-класс
 }
 
-tasks.register('runDocker', Exec) {
-    commandLine 'docker', 'run', '-d', '--name',
-            'paste-handler', '--network', 'my-network', '-p', '8081:8081', 'paste-handler'
+tasks.register('buildDocker', Exec) {
+    dependsOn 'bootJar'
+    commandLine 'docker', 'build', '-t', 'paste-handler:latest', '.'
 }
 
-tasks.register('buildDocker', Exec) {
-    commandLine 'docker', 'build', '-t', 'paste-handler:latest', '.'
+tasks.register('runDocker', Exec) {
+    dependsOn 'buildDocker'
+    commandLine 'docker', 'run', '-d', '--name',
+            'paste-handler', '--network', 'my-network', '-p', '8081:8080',
+            '--env-file', './src/main/resources/.env',
+            'paste-handler'
 }

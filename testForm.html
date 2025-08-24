@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Paste Handler Client</title>
+</head>
+<body>
+<h1>Paste Handler</h1>
+
+<!-- Блок для добавления paste -->
+<section>
+    <h2>Добавить Paste</h2>
+    <form id="putForm">
+        <label>Текст:</label><br>
+        <textarea name="text" rows="5" cols="40"></textarea><br><br>
+
+        <label>Время жизни (сек):</label><br>
+        <input type="number" name="liveTime" value="3600"><br><br>
+
+        <label>Приватный:</label>
+        <input type="checkbox" name="isPrivate"><br><br>
+
+        <button type="submit">Сохранить</button>
+    </form>
+    <pre id="putResponse"></pre>
+</section>
+
+<hr>
+
+<!-- Блок для поиска paste -->
+<section>
+    <h2>Найти Paste</h2>
+    <form id="getForm">
+        <label>Hash:</label><br>
+        <input type="text" name="hash"><br><br>
+        <button type="submit">Найти</button>
+    </form>
+    <pre id="getResponse"></pre>
+</section>
+
+<script>
+    const baseUrl = "http://localhost:8081/controller";
+
+    // PUT /controller/put
+    document.getElementById("putForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const data = {
+            text: form.text.value,
+            liveTime: parseInt(form.liveTime.value),
+            isPrivate: form.isPrivate.checked
+        };
+
+        const response = await fetch(`${baseUrl}/put`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        document.getElementById("putResponse").textContent =
+            "HashResponseDTO: " + JSON.stringify(result, null, 2);
+    });
+
+    // GET /controller/get?hash=...
+    document.getElementById("getForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const hash = form.hash.value;
+
+        const response = await fetch(`${baseUrl}/get?hash=${encodeURIComponent(hash)}`);
+        const result = await response.json();
+
+        document.getElementById("getResponse").textContent =
+            "PasteResponseDTO: " + JSON.stringify(result, null, 2);
+    });
+</script>
+</body>
+</html>
