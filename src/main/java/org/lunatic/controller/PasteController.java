@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.*;
 public class PasteController {
 
     private final PasteService pasteService;
+
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE + "; charset=UTF-8")
     public PasteResponseDTO get(PasteSearchInBlobDTO pasteSearchInBlobDTO) {
         return pasteService.get(pasteSearchInBlobDTO);
     }
+
     @PutMapping("/put")
     public HashResponseDTO put(@RequestBody PasteInputInControllerDTO pasteInputInControllerDTO) {
         return pasteService.put(pasteInputInControllerDTO);
