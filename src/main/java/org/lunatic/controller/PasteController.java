@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/controller")
+@RequestMapping("/pastes")
 @AllArgsConstructor
 @CrossOrigin(origins = "*")
 
@@ -18,9 +18,9 @@ public class PasteController {
 
     private final PasteService pasteService;
 
-    @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE + "; charset=UTF-8")
-    public PasteResponseDTO get(PasteSearchInBlobDTO pasteSearchInBlobDTO) {
-        return pasteService.get(pasteSearchInBlobDTO);
+    @GetMapping(value = "/{hash}")
+    public PasteResponseDTO get(@PathVariable String hash) {
+        return pasteService.get(hash);
     }
 
     @PutMapping("/put")

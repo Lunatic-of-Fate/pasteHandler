@@ -2,7 +2,7 @@ package org.lunatic.storage;
 
 import org.lunatic.DTO.*;
 
-public interface YandexStorage {
+public interface YandexStorageClient {
     HashResponseDTO put(PastePutToBlobDTO request);
-    PasteResponseDTO get(PasteSearchInBlobDTO pasteSearchInBlobDTO);
+    PasteResponseDTO get(String hash);
 }

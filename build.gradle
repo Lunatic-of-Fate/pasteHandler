@@ -18,8 +18,7 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.5.0'
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.780'
     implementation 'org.modelmapper:modelmapper:2.4.4'
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
+    implementation "software.amazon.awssdk:s3:2.25.1"
 
     compileOnly 'org.projectlombok:lombok:1.18.36'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
@@ -29,6 +28,7 @@ dependencies {
 
     implementation 'org.springframework.kafka:spring-kafka:3.3.2'
     testCompileOnly 'org.projectlombok:lombok:1.18.36'
+
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.testcontainers:junit-jupiter:1.20.4'

@@ -1,24 +1,20 @@
 package org.lunatic.config;
 
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration
 public class StorageConfig {
 
-    @Bean
-    public AmazonS3 init() {
-        return AmazonS3ClientBuilder.standard()
-                .withCredentials(DefaultAWSCredentialsProviderChain.getInstance())
-                .withEndpointConfiguration(
-                        new AmazonS3ClientBuilder.EndpointConfiguration(
-                                "storage.yandexcloud.net", "ru-central1"
-                        )
-                )
-                .withPathStyleAccessEnabled(true)
-                .build();
-    }
+  @Bean
+  public S3Client s3Client() {
+    return S3Client.builder()
+      .region(Region.of("ru-central1"))
+      .endpointOverride(java.net.URI.create("https://storage.yandexcloud.net"))
+      .credentialsProvider(DefaultCredentialsProvider.create())
+      .build();
+  }
 }

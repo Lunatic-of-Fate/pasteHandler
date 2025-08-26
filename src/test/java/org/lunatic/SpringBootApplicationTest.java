@@ -13,20 +13,17 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ActiveProfiles("test")
 @Testcontainers
 public abstract class SpringBootApplicationTest {
-    private static final String DATABASE_NAME = "spring-app";
 
 
-    @Container
-    public static PostgreSQLContainer<?> postgreSQLContainer
-            = new PostgreSQLContainer<>("postgres:15-alpine")
-            .withReuse(true)
-            .withDatabaseName(DATABASE_NAME);
+  @Container
+  public static PostgreSQLContainer<?> postgreSQLContainer
+    = new PostgreSQLContainer<>("postgres:15-alpine")
+    .withReuse(true);
 
-    @DynamicPropertySource
-    static void registerDataSourceProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-
-    }
+  @DynamicPropertySource
+  static void registerProperties(DynamicPropertyRegistry registry) {
+    registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
+    registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
+    registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
+  }
 }

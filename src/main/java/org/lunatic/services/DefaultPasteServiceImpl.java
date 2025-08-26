@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.lunatic.DTO.*;
 import org.lunatic.models.Paste;
 import org.lunatic.repositories.PasteJpaRepository;
-import org.lunatic.storage.YandexStorage;
+import org.lunatic.storage.YandexStorageClient;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.time.ZonedDateTime;
 @Slf4j
 public class DefaultPasteServiceImpl implements PasteService {
     private final PasteJpaRepository pasteJpaRepository;
-    private final YandexStorage yandexStorage;
+    private final YandexStorageClient yandexStorage;
     private final RestTemplate restTemplate;
     private final ModelMapper mapper;
     @Value("${hash.generator.url}")
@@ -29,7 +29,6 @@ public class DefaultPasteServiceImpl implements PasteService {
     public HashResponseDTO put(PasteInputInControllerDTO inputDTO) {
         mapper.map(inputDTO, Paste.class);
         Paste paste = Paste.builder()
-                .text(inputDTO.getText())
                 .hash(getHashToGenerator().getHash())
                 .createDateTime(ZonedDateTime.now())
                 .dropDateTime(ZonedDateTime.now().plusHours(inputDTO.getLiveTime()))
@@ -38,11 +37,16 @@ public class DefaultPasteServiceImpl implements PasteService {
         pasteJpaRepository.save(paste);
 
         return mapper.map(
-                yandexStorage.put(mapper.map(paste, PastePutToBlobDTO.class)), HashResponseDTO.class);
+                yandexStorage.put(
+                        PastePutToBlobDTO.builder()
+                        .hash(paste.getHash())
+                        .text(inputDTO.getText())
+                        .build()),
+                HashResponseDTO.class);
     }
 
-    public PasteResponseDTO get(PasteSearchInBlobDTO pasteSearchInBlobDTO) {
-        return yandexStorage.get(pasteSearchInBlobDTO);
+    public PasteResponseDTO get(String hash) {
+        return yandexStorage.get(hash);
     }
 
     private HashResponseDTO getHashToGenerator() {

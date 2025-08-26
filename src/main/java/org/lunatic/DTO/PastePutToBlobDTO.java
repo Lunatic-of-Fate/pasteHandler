@@ -10,8 +10,8 @@ import lombok.*;
 @Setter
 @Builder
 public class PastePutToBlobDTO {
-    @NotBlank(message = "Text cannot be null or empty")
-    private String hash;
-    @NotBlank(message = "Hash cannot be null or empty")
-    private String text;
+  @NotBlank(message = "Text cannot be null or empty")
+  private String hash;
+  @NotBlank(message = "Hash cannot be null or empty")
+  private String text;
 }

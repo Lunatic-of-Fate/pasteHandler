@@ -21,7 +21,6 @@ public class Paste {
     @Id
     @GeneratedValue
     private long Id;
-    private String text;
     private String hash;
     private ZonedDateTime createDateTime;
     private ZonedDateTime dropDateTime;

@@ -7,5 +7,5 @@ import org.lunatic.DTO.PasteSearchInBlobDTO;
 
 public interface PasteService {
     HashResponseDTO put(PasteInputInControllerDTO request);
-    PasteResponseDTO get(PasteSearchInBlobDTO pasteSearchInBlobDTO);
+    PasteResponseDTO get(String hash);
 }

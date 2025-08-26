@@ -5,9 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.lunatic.DTO.*;
+import org.lunatic.DTO.HashResponseDTO;
+import org.lunatic.DTO.PasteInputInControllerDTO;
+import org.lunatic.DTO.PastePutToBlobDTO;
+import org.lunatic.DTO.PasteResponseDTO;
 import org.lunatic.services.PasteService;
-import org.lunatic.storage.YandexStorage;
+import org.lunatic.storage.YandexStorageClient;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -15,7 +18,6 @@ import org.springframework.web.client.RestTemplate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@Nested
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class PasteServiceTest extends SpringBootApplicationTest implements WithAssertions, WithBDDMockito {
 
@@ -23,7 +25,8 @@ class PasteServiceTest extends SpringBootApplicationTest implements WithAssertio
     @MockitoBean
     RestTemplate template;
     @MockitoBean
-    YandexStorage storage;
+    YandexStorageClient storage;
+
     @Test
     void put_correctUse() {
         PasteInputInControllerDTO input = new PasteInputInControllerDTO(
@@ -51,18 +54,22 @@ class PasteServiceTest extends SpringBootApplicationTest implements WithAssertio
 
     @Test
     void search_correctUse() {
-        PasteResponseDTO expectedDTO = new PasteResponseDTO("Hello, World!");
-        given(storage.get(any())).willReturn(expectedDTO);
 
-        PasteResponseDTO response = pasteService.get(new PasteSearchInBlobDTO("hash"));
+        given(storage.get(any())).willReturn(PasteResponseDTO.builder()
+                .hash("hash")
+                .content("Hello, World!")
+                .build()
+        );
 
-        ArgumentCaptor<PasteSearchInBlobDTO> captor = ArgumentCaptor.forClass(PasteSearchInBlobDTO.class);
+        PasteResponseDTO response = pasteService.get("hash");
+
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(storage).get(captor.capture());
-        PasteSearchInBlobDTO captureArgument = captor.getValue();
+        String captureArgument = captor.getValue();
 
         assertAll(
-                () -> assertThat(response.getText()).isEqualTo("Hello, World!"),
-                () -> assertThat(captureArgument.getHash()).isEqualTo("hash")
+                () -> assertThat(response.getContent()).isEqualTo("Hello, World!"),
+                () -> assertThat(captureArgument).isEqualTo("hash")
         );
     }
 }
